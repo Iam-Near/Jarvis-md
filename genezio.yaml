@@ -4,6 +4,7 @@ frontend:
     scripts:
         build: npm run build
         deploy: npm install
-name: Jarvis-md
-region: us-east-1
+    subdomain: Jarvis-md1
+name: Jarvis-md1
+region: eu-central-1
 yamlVersion: 2
