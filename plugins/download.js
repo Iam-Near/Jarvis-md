@@ -119,20 +119,19 @@ System({
 System({
     pattern: 'insta ?(.*)',
     fromMe: true,
-    desc: 'Sends image',
-    type: 'misc',
-}, async (message, match) => { if (!match) return await message.reply('_Provide an Instagram URL_');
-    const res = await fetch(IronMan(`ironman/dl/v2/insta?url=${match}`));
-    const data = await res.json();
-    
-    if (data.status === 200 && Array.isArray(data.media)) {
-        for (const url of data.media) {
-            if (url) {
-                await message.sendFromUrl(url);
-            }
+    desc: 'instagram downloader',
+    type: 'download',
+}, async (message, match) => {
+    const url = await extractUrlFromMessage(match || message.reply_message.text);
+    if (!url) return await message.reply('_Please provide an Instagram *url*'); 
+    if (!isUrl(url)) return await message.reply("_Please provide a valid Instagram *url*");
+    if (!url.includes("instagram.com")) return await message.reply("_Please provide a valid Instagram *url*");
+    const data = await instaDl(url);
+    if (!data || data.length === 0) return await message.reply("_No content found at the provided URL.");
+    for (const imageUrl of data) {
+        if (imageUrl) {
+            await message.sendFromUrl(imageUrl);
         }
-    } else {
-        await message.reply('_No media found or failed to fetch._');
     }
 });
 
